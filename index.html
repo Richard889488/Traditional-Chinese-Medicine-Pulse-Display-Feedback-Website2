@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tw">
+<html lang="en">
 <head>
   <style>
         .container {
@@ -14,6 +14,11 @@
             left: 0;
             /*transition: opacity 0.5s ease-in-out; /* 可选的，为透明度变化添加动画效果 */
         }
+        .image2
+        {
+          position:relative;
+          left:2000;
+        }
     </style>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -27,14 +32,25 @@
     
     <!-- 文件输入 -->
     <input type="file" id="input-excel" />
+    <input type="file" id="input-excel-2" />
+    
     
     <!-- 结果展示 -->
     <div id="result">肌肉： 0</div>
+    <div id="result2">肌肉： 0</div>
     <div class="container">
-      <img id="image1" class="image" src="img/human-body-image.jpg" alt="Image 1">
-      <img id="image2" class="image" src="img/Gluteus_maximus.png" alt="Image 2">
-      <img id="image4" class="image" src="img/下斜方肌.png" alt="Image 1">
-      <img id="image3" class="image" src="img/上斜方肌.png" alt="Image 2">
+      <img id="image1" class="image" src="C:\Users\User\OneDrive\文件\doctor\code\img\human-body-image.jpg" alt="Image 1">
+      <img id="image2" class="image" src="C:\Users\User\OneDrive\文件\doctor\code\img\Gluteus_maximus.png" alt="Image 2">
+      <img id="image4" class="image" src="C:\Users\User\OneDrive\文件\doctor\code\img\下斜方肌.png" alt="Image 1">
+      <img id="image3" class="image" src="C:\Users\User\OneDrive\文件\doctor\code\img\上斜方肌.png" alt="Image 2">
+      <img id="image5" class="image" src="C:\Users\User\OneDrive\文件\doctor\code\img\三頭肌.png" alt="Image 2">
+    </div>
+    <div class="container2">
+      <img id="image12" class="image2" src="C:\Users\User\OneDrive\文件\doctor\code\img\human-body-image.jpg" alt="Image 1"style="position: absolute; top: 150px; left: 600px;">
+      <img id="image22" class="image2" src="C:\Users\User\OneDrive\文件\doctor\code\img\Gluteus_maximus.png" alt="Image 2"style="position: absolute; top: 150px; left: 600px;">
+      <img id="image42" class="image2" src="C:\Users\User\OneDrive\文件\doctor\code\img\下斜方肌.png" alt="Image 1"style="position: absolute; top: 150px; left: 600px;">
+      <img id="image32" class="image2" src="C:\Users\User\OneDrive\文件\doctor\code\img\上斜方肌.png" alt="Image 2"style="position: absolute; top: 150px; left: 600px;">
+      <img id="image52" class="image2" src="C:\Users\User\OneDrive\文件\doctor\code\img\三頭肌.png" alt="Image 2"style="position: absolute; top: 150px; left: 600px;">
     </div>
     <script>
       
@@ -44,6 +60,7 @@
             var image2 = document.getElementById('image2');
             var image3 = document.getElementById('image3');
             var image4 = document.getElementById('image4');
+            var image5 = document.getElementById('image5');
             image4.style.opacity = 0;
             var reader = new FileReader();
             reader.onload = function(e) {
@@ -74,9 +91,17 @@
                         }
                     });
                 });
+                var triceps = 0;
+                json.forEach(row => {
+                    row.forEach(cell => {
+                        if (cell && cell.toString().includes('三頭肌')) {
+                          triceps++;
+                        }
+                    });
+                });
                 
                 // 显示结果
-                document.getElementById('result').innerText = `斜方肌數量： ${Trapezius}臀大肌數量： ${gluteus_maximus}`;
+                document.getElementById('result').innerText = `斜方肌數量： ${Trapezius} 臀大肌數量： ${gluteus_maximus} 三頭肌數量數量： ${triceps}`;
                 //臀大肌
                 if(gluteus_maximus === 1){
                   image2.style.opacity = 0.2;
@@ -101,15 +126,126 @@
                 else if(Trapezius === 3){
                   image3.style.opacity = 0.6;
                 }else if(Trapezius === 4){
-                  image2.style.opacity = 0.8;
+                  image3.style.opacity = 0.8;
                 }else if(Trapezius === 5){
                   image3.style.opacity = 1;
                 }else{
                   image3.style.opacity = 0;
+                }    
+                //三頭肌 
+                if(triceps === 1){
+                  image5.style.opacity = 0.2;
+                }else if(Trapezius === 2){
+                  image5.style.opacity = 0.4;
+                }
+                else if(triceps === 3){
+                  image5.style.opacity = 0.6;
+                }else if(triceps === 4){
+                  image5.style.opacity = 0.8;
+                }else if(triceps === 5){
+                  image5.style.opacity = 1;
+                }else{
+                  image5.style.opacity = 0;
                 }                   
             };
             
             reader.readAsArrayBuffer(e.target.files[0]);
+        });
+        document2.getElementById('input-excel-2').addEventListener('change', function(e) {
+            var image12 = document2.getElementById('image12');
+            var image22 = document2.getElementById('image22');
+            var image32 = document2.getElementById('image32');
+            var image42 = document2.getElementById('image42');
+            var image52 = document2.getElementById('image52');
+            //image4.style.opacity = 0;
+            var reader2 = new FileReader();
+            reader2.onload = function(e) {
+                var data2 = new Uint8Array(reader2.result2);
+                var workbook2 = XLSX.read(data2, {type2: 'array2'});
+                
+                // 假设数据在第一个工作表中
+                var firstSheetName2 = workbook2.SheetNames2[0];
+                var worksheet2 = workbook2.Sheets2[firstSheetName2];
+                
+                // 将工作表转换为JSON
+                var json2 = XLSX.utils2.sheet_to_json(worksheet2, {header2:1});
+                
+                // 搜索"斜方肌"并计算数量
+                var Trapezius2 = 0;
+                json2.forEach(row2 => {
+                    row2.forEach(cell => {
+                        if (cell2 && cell2.toString().includes('斜方肌')) {
+                          Trapezius2++;
+                        }
+                    });
+                });
+                var gluteus_maximus2 = 0;
+                json2.forEach(row2 => {
+                    row2.forEach(cell2 => {
+                        if (cell2 && cell2.toString().includes('臀大肌')) {
+                          gluteus_maximus2++;
+                        }
+                    });
+                });
+                var triceps2 = 0;
+                json2.forEach(row2 => {
+                    row2.forEach(cell => {
+                        if (cell2 && cell2.toString().includes('三頭肌')) {
+                          triceps2++;
+                        }
+                    });
+                });
+                
+                // 显示结果
+                document2.getElementById('result').innerText2 = `斜方肌數量： ${Trapezius2} 臀大肌數量： ${gluteus_maximus2} 三頭肌數量數量： ${triceps2}`;
+                //臀大肌
+                if(gluteus_maximus2 === 1){
+                  image22.style2.opacity2 = 0.2;
+                }else if(gluteus_maximus2 === 2){
+                  image22.style2.opacity2 = 0.4;
+                }
+                else if(gluteus_maximus2 === 3){
+                  image22.style2.opacity2 = 0.6;
+                }else if(gluteus_maximus2 === 4){
+                  image22.style2.opacity2 = 0.8;
+                }else if(gluteus_maximus2 === 5){
+                  image22.style2.opacity2 = 1;
+                }else{
+                  image22.style2.opacity2 = 0;
+                }    
+                //上斜方肌
+                if(Trapezius2 === 1){
+                  image32.style2.opacity2 = 0.2;
+                }else if(Trapezius2 === 2){
+                  image32.style2.opacity2 = 0.4;
+                }
+                else if(Trapezius2 === 3){
+                  image32.style2.opacity2 = 0.6;
+                }else if(Trapezius2 === 4){
+                  image32.style2.opacity2 = 0.8;
+                }else if(Trapezius2 === 5){
+                  image32.style2.opacity2 = 1;
+                }else{
+                  image32.style2.opacity2 = 0;
+                }    
+                //三頭肌 
+                if(triceps2 === 1){
+                  image52.style2.opacity2 = 0.2;
+                }else if(Trapezius2 === 2){
+                  image52.style2.opacity2 = 0.4;
+                }
+                else if(triceps2 === 3){
+                  image52.style2.opacity2 = 0.6;
+                }else if(triceps2 === 4){
+                  image52.style2.opacity2 = 0.8;
+                }else if(triceps2 === 5){
+                  image52.style2.opacity2 = 1;
+                }else{
+                  image52.style2.opacity2 = 0;
+                }                   
+            };
+            
+            reader2.readAsArrayBuffer(e.target2.files[0]);
         });
     </script>
 </body>
