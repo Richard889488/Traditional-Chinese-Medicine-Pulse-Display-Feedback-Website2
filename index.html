@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+        .container {
+            position: relative;
+            width: 1920px; /* 或者根据你的图片大小调整 */
+            height: 1080px; /* 或者根据你的图片大小调整 */
+        }
+
+        .image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            /*transition: opacity 0.5s ease-in-out; /* 可选的，为透明度变化添加动画效果 */
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel文件读取示例</title>
+    <!-- 引入 SheetJS 库 -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <h1>中醫把脈顯示回饋網站</h1>
+    
+    <!-- 文件输入 -->
+    <input type="file" id="input-excel" />
+    
+    <!-- 结果展示 -->
+    <div id="result">肌肉： 0</div>
+    <div class="container">
+      <img id="image1" class="image" src="C:\Users\User\OneDrive\文件\doctor\code\human-body-image.jpg" alt="Image 1">
+      <img id="image2" class="image" src="C:\Users\User\OneDrive\文件\doctor\code\Gluteus_maximus.png" alt="Image 2">
+      <img id="image4" class="image" src="C:\Users\User\OneDrive\文件\doctor\code\下斜方肌.png" alt="Image 1">
+      <img id="image3" class="image" src="C:\Users\User\OneDrive\文件\doctor\code\上斜方肌.png" alt="Image 2">
+    </div>
+    <script>
+      
+        // 当文件输入发生变化时
+        document.getElementById('input-excel').addEventListener('change', function(e) {
+            var image1 = document.getElementById('image1');
+            var image2 = document.getElementById('image2');
+            var image3 = document.getElementById('image3');
+            var image4 = document.getElementById('image4');
+            image4.style.opacity = 0;
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var data = new Uint8Array(reader.result);
+                var workbook = XLSX.read(data, {type: 'array'});
+                
+                // 假设数据在第一个工作表中
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+                
+                // 将工作表转换为JSON
+                var json = XLSX.utils.sheet_to_json(worksheet, {header:1});
+                
+                // 搜索"斜方肌"并计算数量
+                var Trapezius = 0;
+                json.forEach(row => {
+                    row.forEach(cell => {
+                        if (cell && cell.toString().includes('斜方肌')) {
+                          Trapezius++;
+                        }
+                    });
+                });
+                var gluteus_maximus = 0;
+                json.forEach(row => {
+                    row.forEach(cell => {
+                        if (cell && cell.toString().includes('臀大肌')) {
+                          gluteus_maximus++;
+                        }
+                    });
+                });
+                
+                // 显示结果
+                document.getElementById('result').innerText = `斜方肌數量： ${Trapezius}臀大肌數量： ${gluteus_maximus}`;
+                //臀大肌
+                if(gluteus_maximus === 1){
+                  image2.style.opacity = 0.2;
+                }else if(gluteus_maximus === 2){
+                  image2.style.opacity = 0.4;
+                }
+                else if(gluteus_maximus === 3){
+                  image2.style.opacity = 0.6;
+                }else if(gluteus_maximus === 4){
+                  image2.style.opacity = 0.8;
+                }else if(gluteus_maximus === 5){
+                  image2.style.opacity = 1;
+                }else{
+                  image2.style.opacity = 0;
+                }    
+                //上斜方肌
+                if(Trapezius === 1){
+                  image3.style.opacity = 0.2;
+                }else if(Trapezius === 2){
+                  image3.style.opacity = 0.4;
+                }
+                else if(Trapezius === 3){
+                  image3.style.opacity = 0.6;
+                }else if(Trapezius === 4){
+                  image2.style.opacity = 0.8;
+                }else if(Trapezius === 5){
+                  image3.style.opacity = 1;
+                }else{
+                  image3.style.opacity = 0;
+                }                   
+            };
+            
+            reader.readAsArrayBuffer(e.target.files[0]);
+        });
+    </script>
+</body>
+</html>
